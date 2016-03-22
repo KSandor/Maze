@@ -1,0 +1,17 @@
+int** table2D(int lenght, int width, int i, int** table_0)
+{
+    if(i==0)
+    {
+        table_0 = (int**)malloc(lenght*sizeof(int));
+    }
+
+    if(i < lenght)
+    {
+        table_0[i] = (int*)malloc(width*sizeof(int));
+        table2D(lenght,width,i+1,table_0);
+    }
+    else
+    {
+        return table_0;
+    }
+}
