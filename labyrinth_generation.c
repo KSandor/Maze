@@ -41,7 +41,12 @@ int main_maze_generator(int WIDTH, int HEIGHT) {
     for(x = 0; x < (WIDTH * 2); x++) printf("_");
     printf("\n");
     for(y = 0; y < HEIGHT; y++) {
-        printf("|");
+        if((grid[0][y] & W) !=0)
+        {
+            printf(" ");
+        }
+        else
+            printf("|");
         for(x = 0; x < WIDTH; x++) {
             printf( ((grid[x][y] & S) !=  0)?" ":"_");
             if((grid[x][y] & E) != 0){
@@ -56,7 +61,17 @@ int main_maze_generator(int WIDTH, int HEIGHT) {
 
 
 
+ for(y = 0; y < HEIGHT; y++) {
+        for(x = 0; x < WIDTH; x++) {
+            printf("%3d",grid[x][y]);
+        }
+    printf("\n");
+    }
+
   return grid;
+
+
+
 }
 
 
@@ -110,8 +125,10 @@ int carve_passage_2(int cx, int cy, int dx, int dy, int nx, int ny, int HEIGHT, 
 int maze_entrance_exit(int HEIGHT, int WIDTH, int *grid[WIDTH][HEIGHT]) {
     int x=rand()%HEIGHT;
     int y=rand()%HEIGHT;
-    grid[0][x]=grid[0][0]+W;
-    grid[HEIGHT-1][HEIGHT-1]=grid[HEIGHT-1][HEIGHT-1]+E;
+    printf("%d  %d\n",x,grid[0][x]);
+    grid[0][x]=(int)((int)grid[0][x] | (int)W);
+    grid[WIDTH-1][y]=(int)((int)grid[WIDTH-1][y] | (int)E);
+    //grid[HEIGHT-1][HEIGHT-1]=grid[HEIGHT-1][HEIGHT-1]+E;
 }
 
 
