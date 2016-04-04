@@ -4,7 +4,6 @@ int DY[9];
 int OPPOSITE[9];
 
 int main_maze_generator(int WIDTH, int HEIGHT);
-int grid_to_0(int HEIGHT,int WIDTH,int x, int y, int **grid);
 int shuffle_array_recursif(int *array,int size,int i);
 int carve_passage(int cx, int cy,int HEIGHT, int WIDTH, int **grid);
 int carve_passage_2(int cx, int cy, int dx, int dy, int nx, int ny, int HEIGHT, int WIDTH, int **grid, int *directions, int i);

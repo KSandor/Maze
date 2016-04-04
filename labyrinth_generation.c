@@ -7,7 +7,6 @@
 int main_maze_generator(int WIDTH, int HEIGHT) {
 
 
-    int x,y;
     OPPOSITE[N] = S;
     OPPOSITE[E] = W;
     OPPOSITE[S] = N;
@@ -23,56 +22,50 @@ int main_maze_generator(int WIDTH, int HEIGHT) {
     DY[S] = 1;
     DY[W] = 0;
 
-    int grid[WIDTH][HEIGHT];
+
+
+
+    int **grid=NULL;
+    grid=table2D(WIDTH,HEIGHT,0,grid);
 
     srand((unsigned int)time((time_t *)NULL));
 
-    memset(&grid[0], 0, sizeof(grid));
+
+    grid=grid_to_0(HEIGHT,WIDTH,0,0,grid);
+
 
     carve_passage(0, 0,HEIGHT,WIDTH, grid);
+
 
     maze_entrance_exit(HEIGHT,WIDTH,grid);
 
 
 
 
-    /** Display the grid **/
-    printf(" ");
-    for(x = 0; x < (WIDTH * 2); x++) printf("_");
-    printf("\n");
-    for(y = 0; y < HEIGHT; y++) {
-        if((grid[0][y] & W) !=0)
-        {
-            printf(" ");
-        }
-        else
-            printf("|");
-        for(x = 0; x < WIDTH; x++) {
-            printf( ((grid[x][y] & S) !=  0)?" ":"_");
-            if((grid[x][y] & E) != 0){
-                printf((( (grid[x][y] | grid[x + 1][y]) & S) != 0) ?" ":"_");
-            }
-            else {
-            printf("|");
-            }
-        }
-    printf("\n");
-    }
 
 
-
- for(y = 0; y < HEIGHT; y++) {
-        for(x = 0; x < WIDTH; x++) {
-            printf("%3d",grid[x][y]);
-        }
-    printf("\n");
-    }
 
   return grid;
 
 
 
+
+
+
 }
+
+int grid_to_0(int HEIGHT,int WIDTH,int x, int y, int **grid) {
+    if(x==WIDTH)
+        return grid;
+    if(y==HEIGHT)
+        return grid_to_0(HEIGHT,WIDTH,x+1,0,grid);
+    else
+    {
+        grid[x][y]=0;
+        return grid_to_0(HEIGHT,WIDTH,x,y+1,grid);
+    }
+}
+
 
 
 int shuffle_array_recursif(int *array,int size,int i) {
@@ -86,7 +79,7 @@ int shuffle_array_recursif(int *array,int size,int i) {
 }
 
 
-int carve_passage(int cx, int cy,int HEIGHT, int WIDTH, int *grid[WIDTH][HEIGHT]) {
+int carve_passage(int cx, int cy,int HEIGHT, int WIDTH, int **grid) {
     int dx, dy, nx, ny;
     int *directions = NULL;
     directions = (int*)malloc(4*sizeof(int));
@@ -101,7 +94,7 @@ int carve_passage(int cx, int cy,int HEIGHT, int WIDTH, int *grid[WIDTH][HEIGHT]
 
 
 
-int carve_passage_2(int cx, int cy, int dx, int dy, int nx, int ny, int HEIGHT, int WIDTH, int *grid[WIDTH][HEIGHT], int *directions, int i) {
+int carve_passage_2(int cx, int cy, int dx, int dy, int nx, int ny, int HEIGHT, int WIDTH, int **grid, int *directions, int i) {
     if(i<4){
         dx = DX[directions[i]];
         dy = DY[directions[i]];
@@ -122,13 +115,12 @@ int carve_passage_2(int cx, int cy, int dx, int dy, int nx, int ny, int HEIGHT, 
 
 
 
-int maze_entrance_exit(int HEIGHT, int WIDTH, int *grid[WIDTH][HEIGHT]) {
+int maze_entrance_exit(int HEIGHT, int WIDTH, int **grid) {
     int x=rand()%HEIGHT;
     int y=rand()%HEIGHT;
-    printf("%d  %d\n",x,grid[0][x]);
+    printf("Entrance: %d  %d\nExit: %d  %d\n",x,grid[0][x],y,grid[WIDTH-1][y]);
     grid[0][x]=(int)((int)grid[0][x] | (int)W);
     grid[WIDTH-1][y]=(int)((int)grid[WIDTH-1][y] | (int)E);
-    //grid[HEIGHT-1][HEIGHT-1]=grid[HEIGHT-1][HEIGHT-1]+E;
 }
 
 
@@ -140,16 +132,22 @@ int maze_entrance_exit(int HEIGHT, int WIDTH, int *grid[WIDTH][HEIGHT]) {
 
 /** Dynamic allocation of a 2 dimension array **/
 
-int** table2D(int lenght, int width, int i, int** table_0)
+int** table2D(int height, int width, int i, int** table_0)
 {
     if(i==0)
-        table_0 = (int**)malloc(lenght*sizeof(int));
-    if(i < lenght) {
-        table_0[i] = (int*)malloc(width*sizeof(int));
-        table2D(lenght,width,i+1,table_0);
+    {
+        table_0 = (int**)malloc(sizeof(int)*height);
+        table_0[i] = (int*)malloc(sizeof(int)*width*height);
+        table2D(height,width,i+1,table_0);
+    }
+    if(i<height+1)
+    {
+        table_0[i-1]=(*table_0+width*(i-1));
+        table2D(height,width,i+1,table_0);
     }
     else
         return table_0;
 }
+
 
 
